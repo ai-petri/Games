@@ -1,8 +1,12 @@
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
@@ -15,8 +19,13 @@ public class Game extends Composite
 	
 	Canvas canvas;
 	GC gc;
-	int cellWidth;
-	int cellHeight;
+	int cellWidth = 0;
+	int cellHeight = 0;
+	
+	int X = 0;
+	int Y = 0;
+	
+	boolean isDown = false;
 	
 	
 	public Game(Composite parent) {
@@ -27,6 +36,8 @@ public class Game extends Composite
 		canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		gc = new GC(canvas);
+		
+		Image image = new Image(parent.getDisplay(), Game.class.getResourceAsStream("image.png"));
 				
 		canvas.addPaintListener(new PaintListener() {
 			
@@ -47,8 +58,52 @@ public class Game extends Composite
 						gc.fillRectangle(i*cellWidth, j*cellHeight, cellWidth, cellHeight);
 						
 					}
+				
+				//gc.drawImage(image, X*cellWidth, Y*cellHeight);
 			}
 		});
+		
+		canvas.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseUp(MouseEvent e) {
+				isDown = false;
+				gc.drawImage(image, X*cellWidth, Y*cellHeight);
+				
+			}
+			
+			@Override
+			public void mouseDown(MouseEvent e) {
+				isDown = true;
+				canvas.redraw();
+				
+				
+			}
+			
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		canvas.addMouseMoveListener(new MouseMoveListener() {
+			
+			@Override
+			public void mouseMove(MouseEvent e) {
+
+				X = e.x/cellWidth;
+				Y = e.y/cellHeight;
+				
+				if (isDown)
+				{
+					//gc.drawImage(image.)
+				}
+				
+			}
+		});
+		
+		
 		
 		
 		canvas.pack();
