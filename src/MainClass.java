@@ -1,7 +1,9 @@
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -13,6 +15,18 @@ public class MainClass
 	{
 		Display display = new Display();
 		Shell shell = new Shell(display);
+		
+		shell.setLayout(new FillLayout());
+		  
+        CTabFolder tabFolder = new CTabFolder(shell, 0);
+       
+        
+        tabFolder.setVisible(false);
+        
+        		
+        
+        tabFolder.pack();
+        
 		
 //--------------- Menu Bar-------------------------------------------------
 		
@@ -41,25 +55,42 @@ public class MainClass
 		
 		  
 		fileMenuItems[0].setText("New");
-		fileMenuItems[0].addListener(SWT.Selection, new Listener() {
+		fileMenuItems[0].addListener(SWT.Selection, event->
+		{
 				
-				@Override
-				public void handleEvent(Event event) {
+			
 					
 					
-				}
-			});
+					CTabItem tabItem = new CTabItem(tabFolder, SWT.CLOSE);
+
+					tabItem.setText("Game");
+					
+					
+					
+					tabFolder.setSelection(tabItem);
+					tabItem.addDisposeListener(e->
+					
+					{
+						if(tabFolder.getItemCount()<1) tabFolder.setVisible(false);
+					}
+					
+					);
+					
+					tabItem.setControl(new Game(tabFolder));
+					
+					tabFolder.setVisible(true);					
+					
+				
+		});
 				
        
 		fileMenuItems[1].setText("Exit");
-		fileMenuItems[1].addListener(SWT.Selection, new Listener() {
-			
-			@Override
-			public void handleEvent(Event event) {
+		fileMenuItems[1].addListener(SWT.Selection, e -> 
+		{
 				shell.getDisplay().dispose();
 	            System.exit(0);
 				
-			}
+			
 		});
         
               
@@ -69,10 +100,11 @@ public class MainClass
 			
 
         
+      
         
         
         
-        
+       
         
         
 				
