@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -25,19 +27,30 @@ public class Game extends Composite
 	int X = 0;
 	int Y = 0;
 	
+	int x = 0;
+	int y = 0;
+	int offsetX = 0;
+	int offsetY = 0;
+	
+	
+	
+	
 	boolean isDown = false;
 	
 	
 	public Game(Composite parent) {
 		super(parent, 0);
 		this.setLayout(new GridLayout(2,true));
-		canvas = new Canvas(this,SWT.BORDER);
+		canvas = new Canvas(this,SWT.BORDER |SWT.NO_BACKGROUND);
 		canvas.setBackground(new Color(null, 255,255,255));
 		canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		gc = new GC(canvas);
 		
 		Image image = new Image(parent.getDisplay(), Game.class.getResourceAsStream("image.png"));
+		
+		
+		
 				
 		canvas.addPaintListener(new PaintListener() {
 			
@@ -59,7 +72,7 @@ public class Game extends Composite
 						
 					}
 				
-				//gc.drawImage(image, X*cellWidth, Y*cellHeight);
+				gc.drawImage(image, x, y);
 			}
 		});
 		
@@ -68,16 +81,18 @@ public class Game extends Composite
 			@Override
 			public void mouseUp(MouseEvent e) {
 				isDown = false;
-				gc.drawImage(image, X*cellWidth, Y*cellHeight);
+				x = X*cellWidth;
+				y = Y*cellHeight;
+				canvas.redraw();
+				
 				
 			}
 			
 			@Override
 			public void mouseDown(MouseEvent e) {
 				isDown = true;
-				canvas.redraw();
-				
-				
+				offsetX = x - e.x;
+				offsetY = y - e.y;				
 			}
 			
 			@Override
@@ -95,9 +110,13 @@ public class Game extends Composite
 				X = e.x/cellWidth;
 				Y = e.y/cellHeight;
 				
+				
 				if (isDown)
 				{
-					//gc.drawImage(image.)
+					x = e.x + offsetX;
+					y = e.y + offsetY;
+					canvas.redraw();
+					
 				}
 				
 			}
