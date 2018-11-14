@@ -18,6 +18,8 @@ import org.eclipse.swt.widgets.Composite;
 public class Game extends Composite
 {
 
+	Piece[] pieces = {new Piece(0,0), new Piece(0,1), new Piece(0, 2)};
+	int N = 0;
 	
 	Canvas canvas;
 	GC gc;
@@ -29,9 +31,11 @@ public class Game extends Composite
 	
 	int x = 0;
 	int y = 0;
+	
+	
 	int offsetX = 0;
 	int offsetY = 0;
-	
+
 	
 	
 	
@@ -72,7 +76,12 @@ public class Game extends Composite
 						
 					}
 				
-				gc.drawImage(image, x, y);
+				for (int i=0; i<pieces.length; i++)
+					{
+						if(pieces[i].isVisible)
+						gc.drawImage(image, pieces[i].X*cellWidth, pieces[i].Y*cellHeight);
+					}
+				if (isDown) gc.drawImage(image, x, y);
 			}
 		});
 		
@@ -81,8 +90,8 @@ public class Game extends Composite
 			@Override
 			public void mouseUp(MouseEvent e) {
 				isDown = false;
-				x = X*cellWidth;
-				y = Y*cellHeight;
+			
+				pieces[N].isVisible = true;
 				canvas.redraw();
 				
 				
@@ -91,8 +100,18 @@ public class Game extends Composite
 			@Override
 			public void mouseDown(MouseEvent e) {
 				isDown = true;
-				offsetX = x - e.x;
-				offsetY = y - e.y;				
+				
+				offsetX = X*cellWidth - e.x;
+				offsetY = Y*cellHeight - e.y;
+				
+				for (int i=0; i<pieces.length; i++)
+					{
+						if (pieces[i].X == X && pieces[i].Y == Y)
+							{
+								N = i; // выбор фигуры
+								pieces[i].isVisible = false;
+							}
+					}
 			}
 			
 			@Override
@@ -113,6 +132,9 @@ public class Game extends Composite
 				
 				if (isDown)
 				{
+					pieces[N].X = X;	// перемещение фигуры
+					pieces[N].Y = Y;
+					
 					x = e.x + offsetX;
 					y = e.y + offsetY;
 					canvas.redraw();
